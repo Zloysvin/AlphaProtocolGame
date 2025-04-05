@@ -42,7 +42,6 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 lookVector2 = look.ReadValue<Vector2>();
 
-        Controller.Accelerate(move.ReadValue<Vector2>(), 1f * Time.deltaTime);
         if (lookVector2 is { x: 0, y: 0 })
         {
             Controller.Rotate(Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -51,5 +50,11 @@ public class PlayerController : MonoBehaviour
         {
             Controller.Rotate((Vector2)transform.position + lookVector2);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        Controller.Accelerate(move.ReadValue<Vector2>());
+
     }
 }
