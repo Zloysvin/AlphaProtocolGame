@@ -5,21 +5,12 @@ public class ShipController : MonoBehaviour
 {
     private Rigidbody2D _rb;
 
-    [Range(0f, 500f)]
-    public float rotationSpeed = 25f; //TODO remove it later and put rotationSpeed into Ship
+    private float rotationSpeed = 25f;
+    private float limitVelocity = 10f;
 
-    [Range(0f, 100f)]
-    public float limitVelocity = 10f;
-
-    [Space(20)]
-
-    [Header("Speed")]
-    [Range(0f, 1000f)]
-    public float ForwardSpeed = 100f;
-    [Range(0f, 1000f)]
-    public float BackwardsSpeed = 60f;
-    [Range(0f, 1000f)]
-    public float StrafeSpeed = 90f;
+    private float ForwardSpeed = 100f;
+    private float BackwardsSpeed = 60f;
+    private float StrafeSpeed = 90f;
 
     private void Awake()
     {
@@ -53,14 +44,23 @@ public class ShipController : MonoBehaviour
 
         float currentAngle = transform.eulerAngles.z;
         float newAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle,
-            rotationSpeed * Time.deltaTime * (1 - 0.7f * _rb.linearVelocity.magnitude / limitVelocity));
+            rotationSpeed * Time.deltaTime /** (1 - 0.7f * _rb.linearVelocity.magnitude / limitVelocity)*/);
 
         transform.rotation = Quaternion.Euler(0f, 0f, newAngle);
         Debug.DrawLine(transform.position, transform.position + transform.up * directionToTarget.magnitude, Color.red);
     }
-
+                                                      
     public void FixedUpdate()
     {
         _rb.linearVelocity = Vector2.ClampMagnitude(_rb.linearVelocity, limitVelocity);
+    }
+
+    public void SetParameters(float limit, float forward, float backwards, float strafe, float rotation)
+    {
+        limitVelocity = limit;
+        ForwardSpeed = forward;
+        BackwardsSpeed = backwards;
+        StrafeSpeed = strafe;
+        rotationSpeed = rotation;
     }
 }

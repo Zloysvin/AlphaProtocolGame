@@ -1,16 +1,26 @@
 using UnityEngine;
 
+[RequireComponent(typeof(ShipController))]
 public class Ship : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("Ship propulsion")] 
+    public float MaxSpeed = 4f;
+    public float ForwardSpeed = 300f;
+    public float BackwardSpeed = 150f;
+    public float StrafeSpeed = 300f;
+    [Space(10f)] 
+    public float RotationSpeed = 100f;
+
+    [HideInInspector] 
+    public ShipController Controller;
+
+    public void Awake()
     {
-        
+        Controller = GetComponent<ShipController>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Start()
     {
-        
+        Controller.SetParameters(MaxSpeed, ForwardSpeed, BackwardSpeed, StrafeSpeed, RotationSpeed);
     }
 }
