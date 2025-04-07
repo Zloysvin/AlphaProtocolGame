@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(ShipController))]
@@ -11,6 +12,16 @@ public class Ship : MonoBehaviour
     [Space(10f)] 
     public float RotationSpeed = 100f;
 
+    [Space(20f)]
+    [Header("Energy")]
+    public float CurrentEnergy = 0f;
+    public float MaxEnergy = 100f;
+    public float EnergyRegenRate = 10f;
+
+    [Space(20f)]
+    [Header("Weapons")]
+    public List<Weapon> Weapons = new List<Weapon>();
+
     [HideInInspector] 
     public ShipController Controller;
 
@@ -22,5 +33,18 @@ public class Ship : MonoBehaviour
     public void Start()
     {
         Controller.SetParameters(MaxSpeed, ForwardSpeed, BackwardSpeed, StrafeSpeed, RotationSpeed);
+    }
+
+    public void Update()
+    {
+        if (CurrentEnergy < MaxEnergy)
+        {
+            CurrentEnergy += EnergyRegenRate * Time.deltaTime;
+
+            if (CurrentEnergy > MaxEnergy)
+            {
+                CurrentEnergy = MaxEnergy;
+            }
+        }
     }
 }

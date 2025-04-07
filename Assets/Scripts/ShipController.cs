@@ -24,8 +24,6 @@ public class ShipController : MonoBehaviour
 
     public void Accelerate(Vector2 direction)
     {
-        
-
         float yDirSpeed = ForwardSpeed;
         if (direction.y < 0f)
             yDirSpeed = BackwardsSpeed;
