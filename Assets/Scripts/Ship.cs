@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(ShipController))]
@@ -28,11 +29,13 @@ public class Ship : MonoBehaviour
     public void Awake()
     {
         Controller = GetComponent<ShipController>();
+        Weapons = GetComponentsInChildren<Weapon>().ToList();
     }
 
     public void Start()
     {
         Controller.SetParameters(MaxSpeed, ForwardSpeed, BackwardSpeed, StrafeSpeed, RotationSpeed);
+        Controller.ActiveWeapons = Weapons;
     }
 
     public void Update()

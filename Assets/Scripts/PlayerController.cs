@@ -1,5 +1,7 @@
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(ShipController))]
 public class PlayerController : MonoBehaviour
@@ -12,6 +14,8 @@ public class PlayerController : MonoBehaviour
     private InputAction look;
     private InputAction fire;
 
+    private bool isShooting = false;
+
     private void OnEnable()
     {
         move = PlayerActions.Player.Move;
@@ -22,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
         fire = PlayerActions.Player.Attack;
         fire.Enable();
+        fire.performed += StartShooting;
+        fire.canceled += StopShooting;
     }
 
     private void OnDisable()
@@ -50,6 +56,21 @@ public class PlayerController : MonoBehaviour
         {
             Controller.Rotate((Vector2)transform.position + lookVector2);
         }
+
+        if (isShooting)
+        {
+            Controller.Shoot();
+        }
+    }
+
+    private void StartShooting(InputAction.CallbackContext context)
+    {
+        isShooting = true;
+    }
+
+    private void StopShooting(InputAction.CallbackContext context)
+    {
+        isShooting = false;
     }
 
     private void FixedUpdate()

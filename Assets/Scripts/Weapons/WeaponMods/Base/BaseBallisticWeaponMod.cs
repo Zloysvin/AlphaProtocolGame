@@ -1,20 +1,64 @@
+using System.Collections;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BaseBallisticWeaponMod : MonoBehaviour, IWeaponModifier
+public class BaseBallisticWeaponMod : WeaponModifier
 {
-    public void OnShoot(GameObject bullet, Weapon weapon)
+    public override bool OnShoot(GameObject bullet, List<IAttribute> weaponAttributes, Transform firePoint)
     {
-        BaseAttribute baseAttribute = null;
-        BallisticWeaponAttributes ballisticWeapon = null;
-
-        if ((baseAttribute = weapon.WeaponAttributes.OfType<BaseAttribute>().FirstOrDefault()) != null &&
-            (ballisticWeapon = weapon.WeaponAttributes.OfType<BallisticWeaponAttributes>().FirstOrDefault()) != null)
+        if(bullet != null)
         {
-            var projectile = bullet.AddComponent<BaseProjectile>();
-            projectile.Direction = weapon.firePoint.transform.up;
-            projectile.MaxRange = baseAttribute.Range;
-            projectile.Speed = baseAttribute.Speed;
+            BaseAttribute baseAttribute = null;
+            BallisticWeaponAttributes ballisticWeapon = null;
+
+            if ((baseAttribute = weaponAttributes.OfType<BaseAttribute>().FirstOrDefault()) != null &&
+                (ballisticWeapon = weaponAttributes.OfType<BallisticWeaponAttributes>().FirstOrDefault()) != null)
+            {
+                var projectile = bullet.AddComponent<BaseProjectile>();
+
+
+                projectile.Direction = Quaternion.AngleAxis(
+                    UnityEngine.Random.Range(-ballisticWeapon.SpreadAngle / 2f, ballisticWeapon.SpreadAngle / 2f),
+                    Vector3.forward) * firePoint.transform.up;
+                projectile.MaxRange = baseAttribute.Range;
+                projectile.Speed = baseAttribute.Speed;
+
+                ballisticWeapon.MagAmount--;
+
+                var coroutine = WaitForShooting(baseAttribute, new List<IAttribute>() { ballisticWeapon });
+                StartCoroutine(coroutine);
+            }
+            else
+            {
+                CanShoot = false;
+            }
         }
+
+        Debug.Log(CanShoot);
+        return CanShoot;
+    }
+
+    protected override IEnumerator WaitForShooting(BaseAttribute baseAttribute, List<IAttribute> additionalAttributes)
+    {
+        BallisticWeaponAttributes bw = additionalAttributes[0] as BallisticWeaponAttributes;
+
+        CanShoot = false;
+
+        if (bw.MagAmount == 0)
+        {
+            bw.MagAmount = bw.MaxMagAmount;
+            Debug.Log("Reloading Weapon!");
+            yield return new WaitForSeconds(bw.ReloadTime);
+        }
+        else
+        {
+            
+            yield return new WaitForSeconds(1f / baseAttribute.FireDelay);
+            
+        }
+
+        CanShoot = true;
     }
 }

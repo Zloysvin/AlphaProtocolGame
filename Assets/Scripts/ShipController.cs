@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -11,6 +12,8 @@ public class ShipController : MonoBehaviour
     private float ForwardSpeed = 100f;
     private float BackwardsSpeed = 60f;
     private float StrafeSpeed = 90f;
+
+    public List<Weapon> ActiveWeapons;
 
     private void Awake()
     {
@@ -30,8 +33,6 @@ public class ShipController : MonoBehaviour
 
         Vector2 worldDirection = transform.TransformDirection(direction.normalized);
         _rb.AddForce(new Vector2(worldDirection.x * StrafeSpeed / 10000f, worldDirection.y * yDirSpeed / 10000f), ForceMode2D.Impulse);
-
-        Debug.Log($"Y dir Speed: {yDirSpeed} actual speed: {_rb.linearVelocity.magnitude}");
     }
 
     public void Rotate(Vector2 target)
@@ -46,6 +47,14 @@ public class ShipController : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0f, 0f, newAngle);
         Debug.DrawLine(transform.position, transform.position + transform.up * directionToTarget.magnitude, Color.red);
+    }
+
+    public void Shoot()
+    {
+        foreach (var weapon in ActiveWeapons)
+        {
+            weapon.Shoot();
+        }
     }
                                                       
     public void FixedUpdate()
