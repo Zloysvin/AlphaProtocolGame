@@ -2,12 +2,16 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Weapon : MonoBehaviour
 {
     public GameObject bulletPrefab;
     public Transform firePoint;
     public Dictionary<WeaponModifier, bool> WeaponModifiers;
     public List<IAttribute> WeaponAttributes;
+    public ParticleSystem VFX;
+
+    private AudioSource audio;
 
     public void Awake()
     {
@@ -21,6 +25,8 @@ public class Weapon : MonoBehaviour
         }
 
         WeaponAttributes = GetComponents<IAttribute>().ToList();
+
+        audio = GetComponent<AudioSource>();
     }
 
     public void Shoot()
@@ -31,6 +37,8 @@ public class Weapon : MonoBehaviour
         if (canShoot)
         {
             bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+            VFX.Emit(1);
+            audio.PlayOneShot(audio.clip);
         }
 
         foreach (var mod in WeaponModifiers)
