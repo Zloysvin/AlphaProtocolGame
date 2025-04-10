@@ -41,10 +41,10 @@ public class Weapon : MonoBehaviour
             audio.PlayOneShot(audio.clip);
         }
 
-        foreach (var mod in WeaponModifiers)
+        for (int i = 0; i < WeaponModifiers.Count; i++)
         {
-            WeaponModifiers[mod.Key] = mod.Key.OnShoot(bullet, WeaponAttributes, firePoint);
+            var key = WeaponModifiers.ElementAt(i).Key;
+            WeaponModifiers[key] = key.OnShoot(bullet, WeaponAttributes, firePoint);
         }
-
     }
 }

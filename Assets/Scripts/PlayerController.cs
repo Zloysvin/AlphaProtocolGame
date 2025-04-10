@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private InputAction fire;
 
     private bool isShooting = false;
+    private bool shootReleased = true;
 
     private void OnEnable()
     {
@@ -59,7 +60,8 @@ public class PlayerController : MonoBehaviour
 
         if (isShooting)
         {
-            Controller.Shoot();
+            Controller.Shoot(shootReleased);
+            shootReleased = false;
         }
     }
 
@@ -71,6 +73,7 @@ public class PlayerController : MonoBehaviour
     private void StopShooting(InputAction.CallbackContext context)
     {
         isShooting = false;
+        shootReleased = true;
     }
 
     private void FixedUpdate()

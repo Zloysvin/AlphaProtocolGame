@@ -36,7 +36,7 @@ public class BaseBallisticWeaponMod : WeaponModifier
             }
         }
 
-        Debug.Log(CanShoot);
+        Debug.Log(gameObject.name + " " + CanShoot);
         return CanShoot;
     }
 
@@ -55,7 +55,7 @@ public class BaseBallisticWeaponMod : WeaponModifier
         else
         {
             
-            yield return new WaitForSeconds(1f / baseAttribute.FireDelay);
+            yield return new WaitForSeconds(1f / baseAttribute.FireRate);
             
         }
 

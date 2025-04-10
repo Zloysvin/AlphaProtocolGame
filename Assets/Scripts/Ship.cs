@@ -22,6 +22,8 @@ public class Ship : MonoBehaviour
     [Space(20f)]
     [Header("Weapons")]
     public List<Weapon> Weapons = new List<Weapon>();
+    public List<WeaponGroup> WeaponGroups = new List<WeaponGroup>();
+    public int ActiveWeaponGroup = 0;
 
     [HideInInspector] 
     public ShipController Controller;
@@ -30,12 +32,13 @@ public class Ship : MonoBehaviour
     {
         Controller = GetComponent<ShipController>();
         Weapons = GetComponentsInChildren<Weapon>().ToList();
+
+        WeaponGroups.Add(new WeaponGroup(Weapons, true));
     }
 
     public void Start()
     {
         Controller.SetParameters(MaxSpeed, ForwardSpeed, BackwardSpeed, StrafeSpeed, RotationSpeed);
-        Controller.ActiveWeapons = Weapons;
     }
 
     public void Update()

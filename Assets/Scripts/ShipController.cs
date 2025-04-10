@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShipController : MonoBehaviour
 {
     private Rigidbody2D _rb;
+    private Ship ship;
 
     private float rotationSpeed = 25f;
     private float limitVelocity = 10f;
@@ -13,11 +14,10 @@ public class ShipController : MonoBehaviour
     private float BackwardsSpeed = 60f;
     private float StrafeSpeed = 90f;
 
-    public List<Weapon> ActiveWeapons;
-
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+        ship = GetComponent<Ship>();
     }
 
     private void Update()
@@ -49,11 +49,25 @@ public class ShipController : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + transform.up * directionToTarget.magnitude, Color.red);
     }
 
-    public void Shoot()
+    public void Shoot(bool separateShot)
     {
-        foreach (var weapon in ActiveWeapons)
+        bool canShoot = true;
+
+        if (!ship.WeaponGroups[ship.ActiveWeaponGroup].isLinked)
         {
-            weapon.Shoot();
+            if (!separateShot)
+            {
+                canShoot = false;
+            }
+        }
+
+        if (canShoot)
+        {
+            var activeWeapons = ship.WeaponGroups[ship.ActiveWeaponGroup].GetActiveWeapons();
+            foreach (var weapon in activeWeapons)
+            {
+                weapon.Shoot();
+            }
         }
     }
                                                       
